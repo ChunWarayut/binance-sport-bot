@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: binance-trading-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-binance_trading_bot}
+    # ports:
+    #   - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./migrations/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - trading-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: binance-trading-bot
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-binance_trading_bot}
+      BINANCE_API_KEY: ${BINANCE_API_KEY}
+      BINANCE_API_SECRET: ${BINANCE_API_SECRET}
+      BINANCE_TESTNET: ${BINANCE_TESTNET:-false}
+      PORT: ${PORT:-3000}
+      NODE_ENV: ${NODE_ENV:-production}
+      MAX_POSITION_SIZE_PERCENT: ${MAX_POSITION_SIZE_PERCENT:-10}
+      STOP_LOSS_PERCENT: ${STOP_LOSS_PERCENT:-2.5}
+      TAKE_PROFIT_PERCENT: ${TAKE_PROFIT_PERCENT:-5}
+      DAILY_LOSS_LIMIT_PERCENT: ${DAILY_LOSS_LIMIT_PERCENT:-5}
+      MAX_CONCURRENT_POSITIONS: ${MAX_CONCURRENT_POSITIONS:-5}
+      TOP_VOLUME_PAIRS_COUNT: ${TOP_VOLUME_PAIRS_COUNT:-30}
+    ports:
+      - "${PORT:-3000}:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+      - ./migrations:/app/migrations
+    networks:
+      - trading-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  trading-network:
+    driver: bridge

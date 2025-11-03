@@ -1,0 +1,43 @@
+{
+  "name": "binance-spot-trading-bot",
+  "version": "1.0.0",
+  "description": "Binance Spot Trading Bot with multiple strategies",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "bun run --watch src/index.ts",
+    "start": "bun run src/index.ts",
+    "build": "bun build src/index.ts --outdir ./dist",
+    "db:migrate": "drizzle-kit migrate",
+    "db:generate": "drizzle-kit generate",
+    "db:studio": "drizzle-kit studio",
+    "db:seed": "bun run src/db/seed.ts",
+    "test": "bun test",
+    "lint": "eslint src"
+  },
+  "keywords": [
+    "binance",
+    "trading",
+    "bot",
+    "spot",
+    "crypto"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@binance/connector": "^3.6.1",
+    "@elysiajs/cors": "^1.1.1",
+    "@elysiajs/swagger": "^1.1.2",
+    "drizzle-orm": "^0.33.0",
+    "postgres": "^3.4.5",
+    "elysia": "^1.1.14",
+    "zod": "^3.23.8",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.10",
+    "@types/ws": "^8.5.10",
+    "drizzle-kit": "^0.24.1",
+    "typescript": "^5.5.3"
+  }
+}
