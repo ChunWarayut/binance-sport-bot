@@ -6,7 +6,7 @@ WORKDIR /app
 # Install dependencies once using cached Bun downloads
 FROM base AS install
 COPY package.json bun.lockb* ./
-RUN --mount=type=cache,target=/root/.bun bun install --frozen-lockfile --production
+RUN --mount=type=cache,target=/root/.bun bun install --frozen-lockfile
 
 # Copy node_modules and source code into final image
 FROM base AS release
