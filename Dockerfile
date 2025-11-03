@@ -13,7 +13,6 @@ FROM base AS release
 COPY --from=install /app/node_modules ./node_modules
 COPY package.json ./package.json
 COPY bun.lockb* ./bun.lockb
-RUN bun pm prune --production
 
 COPY tsconfig.json ./tsconfig.json
 COPY drizzle.config.ts ./drizzle.config.ts
