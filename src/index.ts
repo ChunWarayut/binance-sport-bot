@@ -5,7 +5,6 @@ import { routes } from './routes';
 import { getStrategyManager } from './strategies/strategyManager';
 import { getPairSelector } from './services/analysis/pairSelector';
 import { getStopLossManager } from './services/risk/stopLossManager';
-import { getStopLossManager } from './services/risk/stopLossManager';
 import { GridStrategy } from './strategies/gridStrategy';
 import { DCAStrategy } from './strategies/dcaStrategy';
 import { MomentumStrategy } from './strategies/momentumStrategy';
@@ -38,7 +37,7 @@ async function autoStart() {
       const executionInterval = parseInt(process.env.EXECUTION_INTERVAL_MS || '60000', 10);
       strategyManager.startExecutionLoop(executionInterval);
       
-          // Update pair selection periodically
+      // Update pair selection periodically
       const pairSelector = getPairSelector();
       await pairSelector.updatePairs();
       console.log('✅ Pair selection updated');
@@ -63,17 +62,8 @@ async function autoStart() {
           console.error('Error updating unrealized PnL / SL-TP checks:', error);
         }
       }, pnlInterval);
-      
-          // Periodic unrealized PnL updates (and SL/TP checks)
-          const slManager = getStopLossManager();
-          const pnlInterval = parseInt(process.env.UNREALIZED_PNL_UPDATE_INTERVAL_MS || '30000', 10);
-          setInterval(() => {
-            slManager.checkAndExecuteStopLosses().catch((err) => {
-              console.error('Error updating unrealized PnL:', err);
-            });
-          }, pnlInterval);
 
-          console.log('✅ Trading bot is running!');
+      console.log('✅ Trading bot is running!');
     } else {
       console.log('⚠️  No active strategies found. Create and activate strategies via API or Dashboard.');
       console.log('📖 See API documentation at /swagger');

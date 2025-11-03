@@ -40,7 +40,7 @@ services:
       MAX_CONCURRENT_POSITIONS: ${MAX_CONCURRENT_POSITIONS:-5}
       TOP_VOLUME_PAIRS_COUNT: ${TOP_VOLUME_PAIRS_COUNT:-30}
     ports:
-      - "${PORT:-3000}:3000"
+      - "${PORT:-3000}:${PORT:-3000}"
     depends_on:
       postgres:
         condition: service_healthy
